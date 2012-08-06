@@ -5,6 +5,13 @@ A Java-Based game development kit made for and by students of Shippensburg Unive
 Originally made for use in-house by the Video Game Development Club
 
 =====
+Building a project with SUGDK
+
+There are two ways you can build a project using SUGDK
+1) You can use a compiled .jar version of the source or
+2) You can fork a stable build of SUGDK to build your project around.  By doing it this way you'll already have a structured folder setup for your project that's compatible with SUGDK's data referencing.
+
+=====
 
 Copyright (C) 2012 Nicholas Hydock, Matthew Hydock, Videogame Development Club at Shippensburg University
 

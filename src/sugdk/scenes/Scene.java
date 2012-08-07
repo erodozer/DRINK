@@ -26,13 +26,13 @@ abstract public class Scene{
      * Effect called when scene transitions in
      * By default we fade the screen from black to the new view
      */
-    protected final Class transIn = FadeOut.class;
+    protected final Class<? extends Transition> transIn = FadeOut.class;
     
     /**
      * Effect called when the previous scene transitions in
      * By default we fade the screen to black
      */
-    protected final Class transOut = FadeIn.class;
+    protected final Class<? extends Transition> transOut = FadeIn.class;
     
 	/**
 	 * Starts the scene

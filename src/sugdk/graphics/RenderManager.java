@@ -161,12 +161,16 @@ public class RenderManager implements SceneManagerListener{
 			trans.setTime(500);
 			trans.setBuffer(getScreenCopy());
 			parent.pauseGame(-1);
-		} catch (Exception e) {
+		} catch (InstantiationException e) {
 			trans = null;
 			if (t)
 				evokeTransition(false);
 			else
 				parent.pauseGame(-1);
+		}
+		catch (Exception e) {
+			trans = null;
+			parent.pauseGame(0);
 		}
 	}
 	
@@ -218,7 +222,7 @@ public class RenderManager implements SceneManagerListener{
 				else
 				{
 					trans = null;
-					parent.pauseGame(-1);
+					parent.pauseGame(0);
 					return;
 				}
 		}		
@@ -247,5 +251,13 @@ public class RenderManager implements SceneManagerListener{
 	 * Nothing is performed on scene being added
 	 */
 	@Override
-	public void onSceneAdd() {}	
+	public void onSceneAdd() {}
+
+	/**
+	 * Sets the full scale factor
+	 * @param d percentage of scale
+	 */
+	public void setScale(double d) {
+		parent.setSize((int)(internal_res[0]*d/100.0), (int)(internal_res[1]*d/100.0));
+	}	
 }

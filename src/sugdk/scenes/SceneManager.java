@@ -65,11 +65,14 @@ public class SceneManager{
 			e.printStackTrace();
 			System.exit(-1);	
 		}
-		
 		sceneList.add(s);
 		classList.add(scene);
 		
 		informSceneAdded();
+		
+		//detect if this is the first scene being added, if so then the manager is also recognizing it as the active scene
+		if (sceneList.size() == 1)
+			changeScene(scene);
 		
 		return true;
 	}

@@ -207,6 +207,9 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 		{
 			animator = new Thread(this);
 			animator.start();
+			
+			//we also initialize the input listeners
+			addKeyListener(this);
 		}
 	}
 //==============================================================================

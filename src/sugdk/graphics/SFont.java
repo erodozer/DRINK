@@ -305,15 +305,15 @@ public class SFont {
 		{
 			//right align anchors to right side
 			if (alignment == 2)
-				x = (int)(anchor.getX() + anchor.getWidth() - 10 - x);
+				x = (int)(anchor.getX() + anchor.getWidth() - x);
 			//center align anchors to center of the window
 			else if (alignment == 1)
 				x = (int)(anchor.getX() + anchor.getWidth()/2 - x);
 			else
-				x = (int)(anchor.getX() + 10 + x);
+				x = (int)(anchor.getX() + x);
 				
-			//windows have additional reserved thickness of 10 pixels
-			y += anchor.getY() + 10;	
+			//sprites do not have edge offsets
+			y += anchor.getY();	
 		}
 		
 		drawString(g, text, x, y, alignment, c);

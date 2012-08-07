@@ -29,7 +29,7 @@ public class SceneManager{
 	//by keeping track of the classes, which is what we use to identify the scenes
 	//we're able to know which ones have already been loaded
 	//class list is parallel to scene list, so the indexes are shared with the respectively loaded scene
-	ArrayList<Class<Scene>> classList = new ArrayList<Class<Scene>>();
+	ArrayList<Class<? extends Scene>> classList = new ArrayList<Class<? extends Scene>>();
 	
 	/**
 	 * Generates a new scene
@@ -37,7 +37,7 @@ public class SceneManager{
 	 * @return true if the scene was able to be managed
 	 *          false if the scene has already been added to the list
 	 */
-	public boolean addScene(Class<Scene> scene)
+	public boolean addScene(Class<? extends Scene> scene)
 	{
 		Scene s = null;
 		
@@ -77,7 +77,7 @@ public class SceneManager{
 	/**
 	 * Changes the actively displaying scene
 	 */
-	public boolean changeScene(Class<Scene> scene)
+	public boolean changeScene(Class<? extends Scene> scene)
 	{
 		//a scene must be added to the manager before it can be changed to
 		if (!classList.contains(scene))

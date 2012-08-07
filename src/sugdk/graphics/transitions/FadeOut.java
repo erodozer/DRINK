@@ -2,6 +2,10 @@ package sugdk.graphics.transitions;
 
 import java.awt.Color;
 
+/**
+ * @author nhydock
+ * FadeOut fades from black to the new buffer
+ */
 public class FadeOut extends FadeToBlack {
 
 	@Override

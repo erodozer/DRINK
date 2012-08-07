@@ -69,14 +69,9 @@ public class RenderManager implements SceneManagerListener{
 	 */
 	private int[] internal_res = {1, 1};
 	
-	//TRANSITION VARIABLES
 	private Transition trans;
-	private static Class transIn = IrisIn.class;
-	private static Class transOut = IrisOut.class;
 
 	private GameFrame parent;
-	
-	private Scene currentScene;	
 	
 	/**
 	 * Creates a new render manager
@@ -95,7 +90,6 @@ public class RenderManager implements SceneManagerListener{
 	public void setParent(GameFrame p)
 	{
 		this.parent = p;
-		currentScene = parent.getEngine().getSceneManager().getCurrentScene();
 	}
 	
 	/**
@@ -159,10 +153,11 @@ public class RenderManager implements SceneManagerListener{
 	public void evokeTransition(boolean t)
 	{
 		try {
+			Scene currentScene = parent.getEngine().getSceneManager().getCurrentScene();
 			if (t)
-				trans = (Transition) transIn.newInstance();
+				trans = (Transition) currentScene.getTransIn().newInstance();
 			else
-				trans = (Transition) transOut.newInstance();
+				trans = (Transition) currentScene.getTransOut().newInstance();
 			trans.setTime(500);
 			trans.setBuffer(getScreenCopy());
 			parent.pauseGame(-1);
@@ -176,18 +171,7 @@ public class RenderManager implements SceneManagerListener{
 	}
 	
 	/**
-	 * Set the classes of the transition style to show
-	 * @param in
-	 * @param out
-	 */
-	public static void setTransitionSet(Class in, Class out)
-	{
-		transIn = in;	
-		transOut = out;
-	}
-	
-	/**
-	 * Gets a copy of the game screen
+	 * Gets a copy of the game screen in its current state
 	 * @return	a buffered image of the game screen scaled up to the frame size
 	 */
 	public BufferedImage getScreenCopy()
@@ -204,7 +188,7 @@ public class RenderManager implements SceneManagerListener{
 	 */
 	public void render()
 	{
-		currentScene = parent.getEngine().getSceneManager().getCurrentScene();
+		Scene currentScene = parent.getEngine().getSceneManager().getCurrentScene();
 		
 		//use current scene's clear color if it exists
 		if (currentScene != null)
@@ -229,7 +213,7 @@ public class RenderManager implements SceneManagerListener{
 		{
 			trans.paint(g);
 			if (trans.isDone())
-				if (trans.getClass() == transIn)
+				if (trans.getClass() == parent.getEngine().getSceneManager().getCurrentScene().getTransIn())
 					evokeTransition(false);
 				else
 				{

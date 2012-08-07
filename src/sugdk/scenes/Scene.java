@@ -2,6 +2,7 @@ package sugdk.scenes;
 
 import java.awt.Graphics;
 
+import sugdk.graphics.transitions.*;
 
 /**
  * Scene.java
@@ -10,7 +11,7 @@ import java.awt.Graphics;
  *	Scene class to encapsulate logic and display
  */
 
-public class Scene{
+abstract public class Scene{
 	
 	/**
 	 * logic system of the scene
@@ -21,15 +22,27 @@ public class Scene{
      */
     protected SceneDisplay display;
     
+    /**
+     * Effect called when scene transitions in
+     * By default we fade the screen from black to the new view
+     */
+    protected final Class transIn = FadeOut.class;
+    
+    /**
+     * Effect called when the previous scene transitions in
+     * By default we fade the screen to black
+     */
+    protected final Class transOut = FadeIn.class;
+    
 	/**
 	 * Starts the scene
 	 */
-	public void start(){}
+	abstract public void start();
 	
 	/**
 	 * Stops the scene
 	 */
-	public void stop(){}
+	abstract public void stop();
 	
 	/**
 	 * Mathematical computation run portion
@@ -60,7 +73,7 @@ public class Scene{
 	
 	/**
 	 * Main rendering method call for the scene
-	 * @param g
+	 * @param g The graphics buffer
 	 */
 	public void render(Graphics g)
 	{
@@ -75,7 +88,7 @@ public class Scene{
 	
 	/**
 	 * Gets the logic system
-	 * @return
+	 * @return system
 	 */
 	public GameSystem getSystem()
 	{
@@ -84,10 +97,28 @@ public class Scene{
 	
 	/**
 	 * Gets the graphical display
-	 * @return
+	 * @return display
 	 */
 	public SceneDisplay getDisplay()
 	{
 	    return display;
+	}
+	
+	/**
+	 * Gets the scene's transition in effect
+	 * @return transIn
+	 */
+	public Class getTransIn()
+	{
+		return transIn;
+	}
+	
+	/**
+	 * Gets the scene's transition out effect
+	 * @return transOut
+	 */
+	public Class getTransOut()
+	{
+		return transOut;
 	}
 }

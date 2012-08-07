@@ -31,6 +31,7 @@ import java.awt.image.ImageObserver;
 import javax.swing.JFrame;
 
 import sugdk.engine.GameEngine;
+import sugdk.graphics.RenderManager;
 
 public abstract class GameFrame extends JFrame implements WindowListener, Runnable, KeyListener
 {
@@ -90,6 +91,8 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 	private Graphics buffer;
 //==============================================================================
 	
+	protected GameEngine engine;
+	protected RenderManager display;
 	
 //==============================================================================
 // Initialization methods.
@@ -137,11 +140,16 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 		canvas = new Canvas();
 		add(canvas);
 		
-		setUndecorated(true);
+		//center the window in the middle of the screen
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((int)(screenSize.getWidth()/2-this.getWidth()/2), (int)(screenSize.getHeight()/2-this.getHeight()/2));
+	
+		//setUndecorated(true);
 		addWindowListener(this);
 		setIgnoreRepaint(true);					// Turn off all paint events.
 		setResizable(false);					// Prevent frame resizing.
 		setVisible(true);
+		
 	}
 	
 	private void initFullScreen()
@@ -405,6 +413,8 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 		{
 			canvas.setPreferredSize(new Dimension(w,h));
 			pack();
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			this.setLocation((int)(screenSize.getWidth()/2-this.getWidth()/2), (int)(screenSize.getHeight()/2-this.getHeight()/2));
 		}
 		else
 			super.setSize(w,h);
@@ -418,6 +428,8 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 		{
 			canvas.setPreferredSize(new Dimension(w,canvas.getHeight()));
 			pack();
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			this.setLocation((int)(screenSize.getWidth()/2-this.getWidth()/2), (int)(screenSize.getHeight()/2-this.getHeight()/2));
 		}
 		else
 			super.setSize(w,super.getHeight());
@@ -439,6 +451,8 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 		if (isWindowed)
 		{
 			canvas.setPreferredSize(new Dimension(canvas.getWidth(),h));
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			this.setLocation((int)(screenSize.getWidth()/2-this.getWidth()/2), (int)(screenSize.getHeight()/2-this.getHeight()/2));
 			pack();
 		}
 		else
@@ -536,8 +550,7 @@ public abstract class GameFrame extends JFrame implements WindowListener, Runnab
 //==============================================================================
 
 	public GameEngine getEngine() {
-		// TODO Auto-generated method stub
-		return null;
+		return engine;
 	}
 
 }

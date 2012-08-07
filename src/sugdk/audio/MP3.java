@@ -44,12 +44,12 @@ public class MP3{
         }
         
         try {
-	    	fis = ((GameEngine.isRscLoading())?getClass().getResourceAsStream("data/audio/"+filename):new FileInputStream("data/audio/"+filename));
+	    	fis = ((GameEngine.isRscLoading())?getClass().getResourceAsStream("data/audio/bgm/"+filename):new FileInputStream("data/audio/bgm/"+filename));
 	        bis = new BufferedInputStream(fis);
 	        player = new AdvancedPlayer(bis);
 	    }
 	    catch (Exception e) {
-	        System.err.println("Problem playing file " + "data/audio/"+filename);
+	        System.err.println("Problem playing file " + "data/audio/bgm/"+filename);
 	        //e.printStackTrace();
 	        return;
 	    }

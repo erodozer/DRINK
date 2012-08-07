@@ -10,13 +10,13 @@ import sugdk.scenes.SceneManager;
  * It should hold all the globally accessible variables, for example in an RPG your main
  * party.  It should not handle any kinds of input or graphics rendering.
  */
-abstract public class GameEngine {
+public class GameEngine {
 
 	//scenes are a main component of a game
 	// as such, the engine is left in charge of managing scenes
-	SceneManager sceneManager = new SceneManager();
+	protected SceneManager sceneManager = new SceneManager();
 	
-	private static boolean isRscLoading = false;
+	protected static boolean isRscLoading = false;
 	
 	/**
 	 * Gets the Engine's scene manager

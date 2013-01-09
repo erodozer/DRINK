@@ -14,17 +14,17 @@ import com.badlogic.gdx.graphics.GL20;
  * @author nhydock
  *
  */
-public class Main extends Game {
+public class AppletMain extends Game {
 
-	private static Main instance = null;
+	private static AppletMain instance = null;
 	
 	/**
 	 * @return instance of singleton Main
 	 */
-	public static Main getInstance()
+	public static AppletMain getInstance()
 	{
 		if (instance == null)
-			instance = new Main();
+			instance = new AppletMain();
 		return instance;
 	}
 	
@@ -36,7 +36,7 @@ public class Main extends Game {
 	 */
 	public static void main(String[] args) {
 		// create the listener that will receive the application events
-        ApplicationListener listener = new Main();
+        ApplicationListener listener = new AppletMain();
  
         // define the window's title
         String title = "DRINK";

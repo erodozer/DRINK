@@ -11,36 +11,51 @@ import sugdk.scenes.GameSystem;
  *
  *	Handles what happens when the game is over
  */
-public class GameOverState extends GameState {
-	
-	public GameOverState(GameSystem c) {
-		super(c);
+public class GameOverState extends DrinkState {
+	public static final int ID = 1;
+
+	public GameOverState(DrinkSystem parent)
+	{
+		super(parent);
 	}
 
 	@Override
-	public void start() {
+	public boolean start() {
 		Engine.getInstance().getGirard().surprise();
+		return false;
 	}
 
 	/**
 	 * Do Nothing
 	 */
 	@Override
-	public void handle() {}
+	public void handle(float delta) {}
 
+	/**
+	 * Cleanup
+	 */
 	@Override
-	public void finish() {
-		//first we save the values to the high score table
-		
-		//then we start the game again
-		parent.setNextState();
+	public boolean end() {
+		return false;
 	}
 
 	@Override
-	public void handleKeyInput(int key) {
-		//we finish when b is hit
-		if (key == Input.KEY_RESET)
-			finish();
+	public boolean keyDown(int key)
+	{
+		if (key == Input.RESET.code)
+		{
+			//first we save the values to the high score table
+			
+			//then we start the game again
+			parent.statemachine.setState(PlayState.ID);	
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int key)
+	{
+		return false;
 	}
 
 }

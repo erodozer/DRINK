@@ -1,124 +1,85 @@
 package sugdk.scenes;
 
-import java.awt.Graphics;
-
-import sugdk.graphics.transitions.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 
 /**
- * Scene.java
+ * Scene
+ * <p/>
+ * More logical and modular handling of the engine's current state than swapping out "Screens".
+ * Scenes are wrappers of Screens in which the logic and display are separated into different components
+ * that are encapsulated from one another while still being coupled.  It makes for a well structured
+ * MVC designed game system to work with.
  * @author nhydock
  *
- *	Scene class to encapsulate logic and display
+ * @param <S> A GameSystem extended class
+ * @param <D> A GameDisplay extended class whose system type is the same as S
  */
+public class Scene<S extends GameSystem, D extends GameDisplay<S>> implements Screen {
 
-abstract public class Scene{
+	protected S system;
+	protected D display;
 	
 	/**
-	 * logic system of the scene
+	 * Ends the display
 	 */
-    protected GameSystem system;
-    /**
-     * display system of the scene
-     */
-    protected SceneDisplay display;
-    
-    /**
-     * Effect called when scene transitions in
-     * By default we fade the screen from black to the new view
-     */
-    protected final Class<? extends Transition> transIn = FadeOut.class;
-    
-    /**
-     * Effect called when the previous scene transitions in
-     * By default we fade the screen to black
-     */
-    protected final Class<? extends Transition> transOut = FadeIn.class;
-    
+	@Override
+	public void dispose() {
+		display.dispose();
+	}
 	/**
-	 * Starts the scene
+	 * Ends the system
 	 */
-	abstract public void start();
+	@Override
+	public void hide() {
+		system.end();
+	}
 	
-	/**
-	 * Stops the scene
-	 */
-	abstract public void stop();
-	
-	/**
-	 * Mathematical computation run portion
-	 */
-	public void update()
-	{
-	    system.update();
-	    
-	    //forces system to be updated before the display can be updated
-	    //this ensures that the display is always showing feedback of the most recent events
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }	    
-        
-        display.update();
+	@Override
+	public void pause() {
+		
 	}
 	
 	/**
-	 * Key pressed is the only kind of input acceptable
-	 * @param keyCode the key code of the key press
+	 * Performs system updates and rendering
 	 */
-	public void keyPressed(int keyCode)
-	{
-	    system.keyPressed(keyCode);
+	@Override
+	public void render(float delta) {
+		//before rendering things, we need to update the system
+		system.update(delta);
+		
+		//then we update the display
+		display.update(delta);
+		
+		//and now we can finally render the display
+		display.render();
 	}
 	
 	/**
-	 * Main rendering method call for the scene
-	 * @param g The graphics buffer
+	 * Resize the display to the new dimensions
 	 */
-	public void render(Graphics g)
-	{
-		if (display != null)
-			display.paint(g);
+	@Override
+	public void resize(int width, int height) {
+		display.resize(width, height);
 	}
 	
-	/*
-	 * Systems and displays should not be set at any time other than
-	 * start, but they can be fetched
-	 */
-	
-	/**
-	 * Gets the logic system
-	 * @return system
-	 */
-	public GameSystem getSystem()
-	{
-	    return system;
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/**
-	 * Gets the graphical display
-	 * @return display
+	 * Start up the scene when it's set to be the current scene
 	 */
-	public SceneDisplay getDisplay()
-	{
-	    return display;
+	@Override
+	public void show() {
+		// start the system and renderer
+		system.start();
+		display.init();
+		
+		// set the current processor to be the system's input handling
+		Gdx.input.setInputProcessor(system);
 	}
 	
-	/**
-	 * Gets the scene's transition in effect
-	 * @return transIn
-	 */
-	public Class getTransIn()
-	{
-		return transIn;
-	}
-	
-	/**
-	 * Gets the scene's transition out effect
-	 * @return transOut
-	 */
-	public Class getTransOut()
-	{
-		return transOut;
-	}
 }

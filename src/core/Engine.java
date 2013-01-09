@@ -2,15 +2,18 @@ package core;
 
 import logic.Girard;
 import logic.Nick;
-import sugdk.engine.GameEngine;
 
-public class Engine extends GameEngine {
+/**
+ * 
+ * @author nhydock
+ *
+ */
+public class Engine{
 
 	private static Engine instance = null;
 	
 	/**
-	 * Get an instance of the engine
-	 * @return
+	 * @return an instance of the engine
 	 */
 	public static Engine getInstance()
 	{
@@ -22,23 +25,24 @@ public class Engine extends GameEngine {
 	private Nick nick;
 	private Girard girard;
 	
-	public Engine()
+	/**
+	 * Creates an engine instance
+	 */
+	private Engine()
 	{
 		nick = new Nick();
 		girard = new Girard();
 	}
 	
 	/**
-	 * Get instance of Nick associated with this system
-	 * @return
+	 * @return instance of Nick associated with this system
 	 */
 	public Nick getNick(){
 		return nick;
 	}
 	
 	/**
-	 * Get instance of Girard associated with this system
-	 * @return
+	 * @return instance of Girard associated with this system
 	 */
 	public Girard getGirard(){
 		return girard;

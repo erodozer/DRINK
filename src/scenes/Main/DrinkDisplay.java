@@ -1,22 +1,45 @@
 package scenes.Main;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.lwjgl.opengl.Display;
+
+import logic.Nick;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Matrix4;
+
+import core.DataDirs;
 import core.Engine;
 import core.Input;
-import core.Main;
 
-import sugdk.graphics.RenderManager;
-import sugdk.graphics.SFont;
-import sugdk.graphics.Sprite;
-import sugdk.scenes.SceneDisplay;
+import sugdk.scenes.GameDisplay;
 
-public class DrinkDisplay extends SceneDisplay {
+/**
+ * 
+ * @author nhydock
+ *
+ */
+public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 
+	public DrinkDisplay(DrinkSystem system)
+	{
+		super(system);
+	}
+
+	SpriteBatch batch;
+	OrthographicCamera camera;
+	
 	/**
 	 * The background image
 	 */
@@ -27,50 +50,84 @@ public class DrinkDisplay extends SceneDisplay {
 	private String score;
 	private String time;
 	
-	public DrinkDisplay()
-	{
-		bg = new Sprite("bg.png");
-		font = SFont.loadFont("default", 7.0f);
-		System.out.println(bg.getWidth());
-	}
-	
-	public void fixScreen()
-	{
-		//fix the resolution once it's loaded
-		RenderManager.getInstance().setInternalResolution((int)bg.getWidth(),(int)bg.getHeight());
-		RenderManager.getInstance().setScale(400.0);	
-	}
-	
+	private BitmapFont font;
+
 	@Override
-	public void update() {
-		Engine e = Engine.getInstance();
-		gameover = parent.getState() instanceof GameOverState;
-		score = String.format("%.2f", e.getNick().getScore());
-		long t = e.getNick().getTime();
-		time = String.format("%02d:%02d:%03d", TimeUnit.NANOSECONDS.toMinutes(t), TimeUnit.NANOSECONDS.toSeconds(t) % 60, TimeUnit.NANOSECONDS.toMillis(t) % 1000);
+	public void init()
+	{
+		bg = new Sprite(new Texture(Gdx.files.internal(DataDirs.ImageDir.path+"bg.png")));
+		
+		batch = new SpriteBatch();
+		/*batch.setTransformMatrix(new Matrix4(new float[]
+									{0f,0f,0f,0f,
+									 (float)(Display.getWidth()/bg.getWidth()), (float)(Display.getHeight()/bg.getHeight()), 1, 0,
+									 0f, 0f, 0f, 0f,
+									 0f, 0f, 0f, 0f}));*/
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, bg.getWidth(), bg.getHeight());
+		FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(DataDirs.FontDir.path + "default.ttf"));
+		font = gen.generateFont(35);
+		font.setScale(.20f);
+		font.setColor(1f, 1f, 1f, 1f);
+		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void dispose()
+	{
+		batch.dispose();
+		
+	}
+
+	@Override
+	public void update(float delta) {
 		Engine e = Engine.getInstance();
-				
-		bg.paint(g);
-		e.getNick().paint(g);
-		e.getGirard().paint(g);
+		Nick n = e.getNick();
+		gameover = (system.getState() == GameOverState.ID);
+		score = String.format("%.2f", n.getScore());
+		float t = e.getNick().getTime();
+		time = String.format("%02d:%02d:%03d", (int)t/60, (int)t % 60, (int)(t*1000) % 1000);
+	}
+	
+	@Override
+	public void render()
+	{
+		camera.update();
+		Engine engine = Engine.getInstance();
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		
+		bg.draw(batch);
+		engine.getNick().draw(batch);
+		engine.getGirard().draw(batch);
 		
 		//draw the shadows
-		font.drawString(g, "TIME: " + time, 2, 18, SFont.LEFT, Color.GRAY, bg);
-		font.drawString(g, "FL Dranked", 2, 18, SFont.RIGHT, Color.GRAY, bg);
-		font.drawString(g, score, 2, 25, SFont.RIGHT, Color.GRAY, bg);
+		font.setColor(0f, 0f, 0f, .25f);
+		//font.setAlignment(SFont.LEFT);
+		font.drawMultiLine(batch, "TIME: \n"+time, 2, 88, 0, HAlignment.LEFT);
+		//font.setAlignment(SFont.RIGHT);
+		font.drawMultiLine(batch, "FL Dranked\n"+score, 148, 88, 0,  HAlignment.RIGHT);
 		
 		//now draw properly
-		font.drawString(g, "TIME: " + time, 2, 17, bg);
-		font.drawString(g, "FL Dranked", 2, 17, 2, bg);
-		font.drawString(g, score, 2, 24, 2, bg);
-
-		font.drawString(g, (gameover)?"YOU HAVE BEEN CAUGHT!":"PRESS " + KeyEvent.getKeyText(Input.KEY_DRINK) + " TO CHUG OJ", 0, 95, 1, bg);
-		font.drawString(g, (gameover)?"PRESS " + KeyEvent.getKeyText(Input.KEY_RESET) + " TO RESET GAME":"", 0, 8, 1, Color.BLACK, bg);	
+		font.setColor(1f, 1f, 1f, 1f);
+		//font.setAlignment(SFont.LEFT);
+		font.drawMultiLine(batch, "TIME: \n"+time, 2, 89, 0, HAlignment.LEFT);
+		//font.setAlignment(SFont.RIGHT);
+		font.drawMultiLine(batch, "FL Dranked\n"+score, 148, 89, 0,  HAlignment.RIGHT);
+		
+		//font.setAlignment(SFont.CENTER);
+		font.drawMultiLine(batch, (gameover)?"YOU HAVE BEEN CAUGHT!":"TAP " + Input.DRINK.key + " TO CHUG OJ", 75, 10, 0, BitmapFont.HAlignment.CENTER);
+		font.setColor(0f, 0f, 0f, 1f);
+		font.drawMultiLine(batch, (gameover)?"PRESS " + Input.RESET.key + " TO RESET GAME":"", 75, 97, 0, BitmapFont.HAlignment.CENTER);	
 	
+		batch.end();
+	}
+
+	@Override
+	public void resize(int width, int height)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

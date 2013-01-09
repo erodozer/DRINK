@@ -1,10 +1,16 @@
 package logic;
-import java.awt.Graphics;
-import java.sql.Date;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
-import sugdk.graphics.Sprite;
+import sugdk.graphics.SpriteSheet;
+import sugdk.graphics.Animation;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import core.DataDirs;
 
 
 /**
@@ -23,8 +29,6 @@ public class Nick{
 							//frames of animation for chugging
 	static final int RATE_TO_INCREASE = 10;
 							//number of button presses needed to increase the rate
-	public static final long DIE_RATE = 500;
-							//rate at which you fall down ranks in chugging
 	
 	static final SimpleDateFormat sdf = new SimpleDateFormat("m:s.S");
 							//formats the time display
@@ -32,8 +36,7 @@ public class Nick{
 							//formats the score display
 	
 	double score;			//fluid ounces that have been drunken by Nick
-	long time;				//time that Nick has been able to drink
-	long startChugTime;		//time of when chugging started
+	float time;				//time that Nick has been able to drink
 	
 	int chugRate;			//the rate at which Nick chugs his OJ
 							//also determines the animation used
@@ -45,17 +48,23 @@ public class Nick{
 	long breathe;			//when chugging at the fastest rate, Nick starts to lose his breathe
 							//when he runs out of breathe, he passes out and falls over.
 	
-	Sprite sprite;			//the sprite animation for Nick
+	Animation[] sprite;			//the sprite animation for Nick
 	
 	/**
 	 * Creates an instance of Nick
 	 */
 	public Nick()
 	{
-
-		sprite = new Sprite("nick.png", CHUGANIM, CHUGMAX);
-		sprite.setX(82);
-		sprite.setY(54);
+		SpriteSheet tex = new SpriteSheet(new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "nick.png")), CHUGANIM, CHUGMAX);
+		sprite = new Animation[CHUGMAX];
+		for (int i = 0; i < sprite.length; i++)
+		{
+			sprite[i] = new Animation(.10f, tex.getRow(i));
+			sprite[i].setPlayMode(Animation.PINGPONG);
+			sprite[i].loop();
+			sprite[i].setX(82);
+			sprite[i].setY(17);
+		}
 	}
 	
 	/**
@@ -77,9 +86,6 @@ public class Nick{
 		if (chugRate >= CHUGMAX)
 			return;
 		
-		if (chugRate == 1 && chugStep == 0)
-			startChugTime = System.currentTimeMillis();
-		
 		if (chugStep >= RATE_TO_INCREASE)
 		{
 			chugRate = Math.min(CHUGMAX, chugRate+1);
@@ -89,6 +95,9 @@ public class Nick{
 			chugStep++;
 	}
 	
+	/**
+	 * Decreases chugging rate
+	 */
 	public void decreaseRate()
 	{
 		chugRate = Math.max(1, chugRate-1);
@@ -98,9 +107,9 @@ public class Nick{
 	/**
 	 * @return the amount of time needed between key presses to know if the rate should be modified
 	 */
-	public long pressRate()
+	public float pressRate()
 	{
-		return (CHUGMAX-chugRate)*1000;
+		return (CHUGMAX-chugRate)*.5f + .25f;
 	}
 	
 	/**
@@ -113,23 +122,22 @@ public class Nick{
 
 	/**
 	 * Updates timer and score while chugging
+	 * @param delta - time passed since previous update
 	 */
-	public void update()
+	public void update(float delta)
 	{
 		if (chugRate > 1)
 		{
-			long cT = System.currentTimeMillis();		//current time
-			time += cT-startChugTime;			//update timer by amount since last checked while chugging
-			startChugTime = cT;					//set last checked time to current time
-			
-			score += chugRate/100.0;				//increases the score
+			time += delta;				//update timer by amount since last checked while chugging
+			score += chugRate/100.0;	//increases the score
 		}
+		sprite[chugRate-1].update(delta);
 	}
 	
 	/**
 	 * @return total amount of time spent chugging
 	 */
-	public long getTime()
+	public float getTime()
 	{
 		return time;
 	}
@@ -138,21 +146,9 @@ public class Nick{
 	 * Paints the character to screen
 	 * @param g
 	 */
-	public void paint(Graphics g)
+	public void draw(SpriteBatch g)
 	{
-		if (loop)
-			if (animFrame - 1 == 0)
-				loop = false;
-			else
-				animFrame--;
-		else
-			if (animFrame + 1 > CHUGMAX)
-				loop = true;
-			else
-				animFrame++;
-		
-		sprite.setFrame(animFrame, chugRate);
-		sprite.paint(g);
+		sprite[chugRate-1].draw(g);
 	}
 
 	/**

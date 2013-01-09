@@ -1,229 +1,284 @@
 package sugdk.graphics;
 
-import java.awt.Graphics;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Animation
+ * <p/>
+ * Not being satisfied with Gdx's 2D animation system, this extends off of it by giving
+ * animations their own timers that'll allow them to cycle through their animations through
+ * an update system.  It's also easier to get the current frame of the animation.
  * @author nhydock
  *
- *	Graphics class adapted from UlDunAd, it handles drawing of images to the screen
- *	in an automated sequence to show an animation.
  */
-public class Animation {
-
-	Sprite sheet;					//the sprite sheet to use for animation
-	ArrayList<Frame[]> frames;		//list of lines of animation
+public class Animation
+{
+	/**
+	 * Plays once in forward direction
+	 */
+	public static final int NORMAL = 0;
+	/**
+	 * Plays once in backward direction
+	 */
+	public static final int REVERSE = 1;
+	/**
+	 * Plays once forward then in reverse
+	 */
+	public static final int PINGPONG = 2;
 	
-	//type of anchoring relation, 
-	// because animations were mainly designed with battle in mind,
-	// the types are relative for that kind of system
-	// 0 = screen
-	//	animation is applied in relation to the entire screen 
-	// 1 = target
-	//  animation is in relation to the actor being attacked
-	// 2 = parent
-	//  animation is in relation to the actor using the animation
-	//Don't worry, these values will be allowed to be overriden in the
-	// scripting system, these only provide defaults for use in battle
-	int relationType = 0;	
+	boolean loop;		//whether or not the animation should loop
+	int loopcounter;	//how many times the animation should loop
 	
-	Sprite anchor;
+	//array of all the frames of the animation
+	Array<TextureRegion> regions;
 	
-	int currentFrame = 0;			//current frame of animation
+	float stepLength;	//how much time must pass before going to the next frame
+	float timer;		//current time in the animation
 	
+	int currentFrame;	//current frame of animation
+	int frames;			//number of frames to the animation
+	
+	//way it should play
+	int playMode;
+	
+	//animation controllers
+	private boolean reverse;
+	private boolean done;
+	
+	//location on screen of the animation
+	int x, y;
 	
 	/**
-	 * Construct an animation object
-	 * @param f		the path to the animation file
-	 * @param image
+	 * Creates an animation
+	 * @param stepLength - time between steps
+	 * @param regions - texture frames to use in the animation
 	 */
-	public Animation(String f)
+	public Animation(float stepLength, Array<TextureRegion> regions)
 	{
-		try {
-			File file = new File("data/animation/"+f+".anim");	
-			Scanner s = new Scanner(file);
-			int Frames = s.nextInt();
-			sheet = new Sprite("animation/"+f+".png", Frames, 1);
-			
-			frames = new ArrayList<Frame[]>();
-			s.nextLine();	//moves the cursor to the end of the line
-			
-			//figures out the relation type for anchoring
-			String r = s.nextLine();
-			if (r.equals("parent"))
-				relationType = 2;
-			else if (r.equals("target"))
-				relationType = 1;
-			else
-				relationType = 0;
-			
-			//each line after the first two is a line of frame information for the animation
-			while (s.hasNextLine())
-			{
-				String line = s.nextLine();
-				String[] fList = line.split("[|]");		//splits the next line into its different frames
-				Frame[] fR = new Frame[fList.length];			//the different frames played during the frame of animation
-				//loads all the images for the line of animation
-				for (int i = 0; i < fR.length; i++)	
-					fR[i] = new Frame(sheet, fList[i]);
-				
-				frames.add(fR);
-			}
-		} catch (FileNotFoundException e) {
-			
-			e.printStackTrace();
-		}
+		this.regions = regions;
+		
+		this.stepLength = stepLength;
+		this.timer = 0;
+		this.currentFrame = 0;
+		this.frames = regions.size;
+		this.reverse = false;
+		this.playMode = Animation.NORMAL;
+		this.loop = false;
+		this.loopcounter = 0;
 	}
 	
 	/**
-	 * Sets the anchoring sprite for the animation
-	 * @param s	sprite to anchor to
+	 * @param stepLength
+	 * @param regionList
 	 */
-	public void setRelation(Sprite s)
+	public Animation(float stepLength, TextureRegion[] regionList)
 	{
-		anchor = s;
-		for (int i = 0; i < frames.size(); i++)
-			for (int n = 0; n < frames.get(i).length; n++)
-				frames.get(i)[n].setRelation(anchor);
+		this(stepLength, new Array<TextureRegion>(regionList));
 	}
 	
 	/**
-	 * @return the relation anchoring type of the animation for use in battle
+	 * Updates the animation timer and current frame
+	 * @param delta - seconds passed since previous update
 	 */
-	public int getRelationType()
+	public void update(float delta)
 	{
-		return relationType;
-	}
-	
-	/**
-	 * Paints the animation to screen,
-	 * by default the animation doesn't loop
-	 * @param g
-	 */
-	public void paint(Graphics g)
-	{
-		paint(g, false);
-	}
-	
-	/**
-	 * Paints the entirety of the animation
-	 * @param g
-	 */
-	public void paint(Graphics g, boolean loop)
-	{
-		if (g != null && frames != null)
+		if (!done)
 		{
-			//if the current frame is greater than the amount of frames there are,
-			// roll back to 0 to repeat
-			if (currentFrame >= frames.size())
+			this.timer += delta;
+			if (this.timer > this.stepLength)
 			{
-				if (loop)
-					reset();
-				else
-					return;
+				currentFrame += (reverse)?-1:1;
+				
+				if (isAtEnd())
+				{
+					switch (loopcounter)
+					{
+						//done when loop counter is at 0
+						case 0:
+						{
+							done = true;
+							break;
+						}
+						//infinite
+						case -1:
+						{
+							if (playMode == PINGPONG)
+								reverse = !reverse;
+							break;
+						}
+						//decrement loop counter
+						default:
+						{
+							//decrement on PINGPONG only if it has finished going in reverse
+							if (playMode != PINGPONG)
+							{
+								loopcounter -= 1;
+							}
+							else
+							{
+								if (reverse)
+								{
+									loopcounter -= 1;	
+								}
+								reverse = !reverse;
+							}
+							break;
+						}
+					}
+				}
+				this.timer = 0;
 			}
-			
-			Frame[] line = frames.get(currentFrame);
-			for (int x = 0; x < line.length; x++)
-				line[x].paint(g);
-			currentFrame++;
 		}
 	}
 	
 	/**
-	 * Resets the animation to its first frame
+	 * Detects if the animation is at an end of a cycle
+	 * @return
+	 */
+	private boolean isAtEnd()
+	{
+		if (reverse)
+			return (currentFrame <= 0);
+		else
+			return (currentFrame >= frames-1);
+	}
+	
+	/**
+	 * Resets the animation
+	 * NOTE: Does not affect current looping properties
 	 */
 	public void reset()
 	{
-		currentFrame  = 1;
-	}
-	
-	/**
-	 * @return	the index of the current frame of animation
-	 */
-	public int getCurrentFrame()
-	{
-		return currentFrame;
-	}
-	
-	/**
-	 * @return	the number of frames in the animation
-	 */
-	public int getNumberOfFrame()
-	{
-		return frames.size();
-	}
-	
-	/**
-	 * Reports if the animation is done playing through
-	 * @return
-	 */
-	public boolean isDone()
-	{
-		return currentFrame >= frames.size();
-	}
-	
-	/**
-	 * Jumps frame to end to quickly finish it
-	 */
-	public void stop()
-	{
-		currentFrame = frames.size();
-	}
-	
-	/**
-	 * Frame
-	 * @author nhydock
-	 *
-	 *	Sub class for handling parsing and rendering of each frame of animation
-	 */
-	private class Frame
-	{
-		Sprite sheet;			//sprite sheet
-		int frame;				//frame of the sprite sheet to draw
-		double xPos;			//x position
-		double yPos;			//y position
-		double width;			//width of the frame
-		double height;			//height of the frame
-		double angle;			//rotation angle of the frame
-		
-		Sprite parent;			//relative sprite for position anchoring
-		
-		public Frame(Sprite s, String line)
+		done = false;
+		timer = 0;
+		if (playMode != REVERSE)
 		{
-			sheet = s;
-			String[] prop = line.split(",");
-			
-			frame = Integer.parseInt(prop[0]);
-			xPos = Double.parseDouble(prop[1]);
-			yPos = Double.parseDouble(prop[2]);
-			width = Double.parseDouble(prop[3]);
-			height = Double.parseDouble(prop[4]);
-			angle = Integer.parseInt(prop[5]);
+			currentFrame = 0;
 		}
-		
-		/**
-		 * Will set all points relative to said sprite
-		 * @param s
-		 */
-		public void setRelation(Sprite s)
+		else
 		{
-			parent = s;
-		}
-		
-		public void paint(Graphics g)
-		{
-			sheet.setFrame(frame, 1);
-			sheet.setX(((parent != null)?parent.getX():0)+xPos);
-			sheet.setY(((parent != null)?parent.getY():0)+yPos);
-			sheet.scale(width, height);
-			sheet.rotate(angle);
-			sheet.paint(g);
+			currentFrame = frames-1;
 		}
 	}
 	
+	/**
+	 * Tells animation to loop infinitely
+	 */
+	public void loop()
+	{
+		loop(true, -1);
+	}
+	
+	/**
+	 * Tells animation whether or not it should loop infinitely
+	 * @param doLoop
+	 */
+	public void loop(boolean doLoop)
+	{
+		loop(doLoop, -1);
+	}
+	
+	/**
+	 * Tells animation whether or not it should loop, and how many times it should look if it should
+	 * @param doLoop
+	 * @param count
+	 */
+	public void loop(boolean doLoop, int count)
+	{
+		loop = doLoop;
+		loopcounter = count;
+	}
+	
+	/**
+	 * Changes how the animation should play
+	 * @param playMode
+	 */
+	public void setPlayMode(int playMode)
+	{
+		this.playMode = playMode;
+		if (playMode == Animation.REVERSE)
+		{
+			reverse = true;
+		}
+		else if (playMode == Animation.NORMAL)
+		{
+			reverse = false;
+		}
+		else
+		{
+			//Ping Pong should not change the direction it's going	
+		}
+	}
+	
+	/**
+	 * @return the texture region of the current frame
+	 */
+	public TextureRegion getFrame()
+	{
+		return regions.get(currentFrame);
+	}
+	
+	/**
+	 * @param x - X position of the animation
+	 */
+	public void setX(int x)
+	{
+		this.x = x;
+	}
+	
+	/**
+	 * @param y - Y position of the animation
+	 */
+	public void setY(int y)
+	{
+		this.y = y;
+	}
+	
+	/**
+	 * @return the X position of the animation
+	 */
+	public int getX()
+	{
+		return x;
+	}
+	
+	/**
+	 * @return the Y position of the animation
+	 */
+	public int getY()
+	{
+		return y;
+	}
+	
+	/**
+	 * @param i - frame index
+	 * @return the texture region of the specified frame
+	 */
+	public TextureRegion getFrame(int i)
+	{
+		return regions.get(i);
+	}
+	
+	/**
+	 * Draws the animation with a sprite batch to the display
+	 * @param sb - sprite batch
+	 */
+	public void draw(SpriteBatch sb)
+	{
+		sb.draw(regions.get(currentFrame), x, y);
+	}
+	
+	/**
+	 * Draws a specific frame of the animation to the display
+	 * @param sb - sprite batch
+	 * @param frame
+	 */
+	public void draw(SpriteBatch sb, int frame)
+	{
+		sb.draw(regions.get(frame), x, y);
+	}
 }

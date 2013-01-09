@@ -1,9 +1,14 @@
 package logic;
-import java.awt.Color;
-import java.awt.Graphics;
 
-import sugdk.graphics.Sprite;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import core.DataDirs;
+
+import sugdk.graphics.Animation;
 
 /**
  * Girard
@@ -22,29 +27,34 @@ public class Girard {
 	// realizes
 	
 	//amount needed to be fully aware
-	static final double AWARENESS_NEEDED = 5;	
+	static final float AWARENESS_NEEDED = 5.0f;	
 	
 	//awareness needed before looking down again
-	static final double AWARENESS_END = 6;
+	static final float AWARENESS_END = 6.0f;
 
 	//awareness can start at a random amount
-	static final double AWARENESS_MAX = AWARENESS_NEEDED/2.0;
-	static final double AWARENESS_MIN = 0;		
+	static final float AWARENESS_MAX = AWARENESS_NEEDED/2.0f;
+	static final float AWARENESS_MIN = 0.0f;		
 
-	//rate at which he becomes aware
-	static final double AWARENESS_RATE = .1;
+	//should take this long to become fully aware from a state of minimum awareness
+	static final float AWARENESS_RATE = 1.5f;
 	
 	//time before next time he looks up
-	static final long MAX_TIME_BEFORE_LOOKUP = 25000;
-	static final long MIN_TIME_BEFORE_LOOKUP = 5000;
+	static final float MAX_TIME_BEFORE_LOOKUP = 25;
+	static final float MIN_TIME_BEFORE_LOOKUP = 5;
 	
-	Sprite sprite;
+	Animation distracted;
+	Sprite aware;
 	Sprite surprise;
 	
-	double awareness = 0;
-	long timeWhenLookedDown;
-	long timeSinceLookDown;
-	long timeUntilLookUp;
+	//awareness bar
+	Sprite bar;
+	Sprite fill;
+	
+	float awareness = 0f;
+	float timeWhenLookedDown;
+	float timeSinceLookDown;
+	float timeUntilLookUp;
 
 	boolean surprised;
 	
@@ -53,12 +63,31 @@ public class Girard {
 	 */
 	public Girard()
 	{
-		sprite = new Sprite("girard.png", 3, 1);
-		sprite.setX(51);
-		sprite.setY(53);
-		surprise = new Sprite("surprise.png");
+		Texture idleTex = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "girard.png"));
+		TextureRegion[] regions = {
+				new TextureRegion(idleTex, idleTex.getWidth()/3, 0, idleTex.getWidth()/3, idleTex.getHeight()),
+				new TextureRegion(idleTex, 2*idleTex.getWidth()/3, 0, idleTex.getWidth()/3, idleTex.getHeight()),
+				};
+		distracted = new Animation(.25f, regions);
+		distracted.setPlayMode(Animation.PINGPONG);
+		distracted.loop();
+		distracted.setX(51);
+		distracted.setY(23);
+		aware = new Sprite(new TextureRegion(idleTex, 0, 0, idleTex.getWidth()/3, idleTex.getHeight()));
+		aware.setX(51);
+		aware.setY(23);
+		//exclamation point!
+		surprise = new Sprite(new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "surprise.png")));
 		surprise.setX(51);
-		surprise.setY(38);
+		surprise.setY(50);
+		
+		Texture awareBar = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "awareness.png"));
+		bar = new Sprite(new TextureRegion(awareBar, 0, 0, awareBar.getWidth(), awareBar.getHeight()/2));
+		bar.setX(46);
+		bar.setY(46);
+		fill = new Sprite(new TextureRegion(awareBar, 0, awareBar.getHeight()/2, awareBar.getWidth(), awareBar.getHeight()/2));
+		fill.setX(bar.getX());
+		fill.setY(bar.getY());
 		setup();
 	}
 	
@@ -78,7 +107,7 @@ public class Girard {
 	 */
 	public void lookUp()
 	{
-		awareness = Math.random()*(AWARENESS_MAX - AWARENESS_MIN);
+		awareness = (float)(Math.random()*(AWARENESS_MAX - AWARENESS_MIN));
 	}
 	
 	/**
@@ -96,16 +125,20 @@ public class Girard {
 	
 	/**
 	 * Updates Girard's lookup/lookdown timer
+	 * @param delta 
 	 */
-	public void update()
+	public void update(float delta)
 	{
 		//when looking down, update until look up starts
 		if (awareness < 0)
 		{
-			timeSinceLookDown = System.currentTimeMillis() - timeWhenLookedDown;
-			//System.err.println(timeSinceLookDown);
+			timeSinceLookDown += delta;
+			distracted.update(delta);
+			
 			if (timeSinceLookDown > timeUntilLookUp)
+			{
 				lookUp();
+			}
 		}
 		//if he's done looking around, look back down at the computer
 		else if (awareness >= AWARENESS_END)
@@ -115,7 +148,7 @@ public class Girard {
 		//update his awareness
 		else
 		{
-			awareness += AWARENESS_RATE;
+			awareness += AWARENESS_RATE*delta;
 		}
 	}
 	
@@ -137,28 +170,26 @@ public class Girard {
 	
 	/**
 	 * Draws Girard
-	 * @param g
+	 * @param batch
 	 */
-	public void paint(Graphics g)
+	public void draw(SpriteBatch batch)
 	{
 		if (awareness >= 0)
-			sprite.setFrame(1, 1);
+			aware.draw(batch);
 		//makes it look like he's fiddling with his computer when he's not aware
 		else
-			sprite.setFrame((int)(Math.random()*2)+2, 1);
-		sprite.paint(g);
+			distracted.draw(batch);
+		if (surprised)
+		{
+			surprise.draw(batch);
+		}
 		
 		//draw a little awareness meter above his head when he's looking around
 		if (awareness > 0 && !surprised)
 		{
-			g.setColor(Color.RED);
-			g.fillRect((int)sprite.getX()-5, (int)sprite.getY()-5, (int)((Math.min(AWARENESS_NEEDED, awareness)/AWARENESS_NEEDED)*20), 2);
-			g.setColor(Color.BLACK);
-			g.drawRect((int)sprite.getX()-5, (int)sprite.getY()-5, 20, 2);
-		}
-		else if (surprised)
-		{
-			surprise.paint(g);
+			fill.setSize((float)((Math.min(AWARENESS_NEEDED, awareness)/AWARENESS_NEEDED)*20), 4);
+			fill.draw(batch);
+			bar.draw(batch);
 		}
 	}
 }

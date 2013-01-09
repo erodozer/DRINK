@@ -2,31 +2,21 @@ package scenes.Main;
 
 import sugdk.scenes.Scene;
 
-public class MainScene extends Scene {
-
+/**
+ * @author nhydock
+ *
+ */
+public class MainScene extends Scene<DrinkSystem, DrinkDisplay> {
+	
+	public static final int ID = 0;
+	
 	/**
 	 * Initialize the main scene for the game
 	 */
 	public MainScene()
 	{
 		system = new DrinkSystem();
-		display = new DrinkDisplay();
-		display.setParent(system);
+		display = new DrinkDisplay(system);
 	}
-	
-	/**
-	 * Starts the system of the game
-	 */
-	@Override
-	public void start() {
-		system.start();
-		((DrinkDisplay)display).fixScreen();
-	}
-
-	/**
-	 * This is the only scene of the game, so stop is never called
-	 */
-	@Override
-	public void stop() {}
 
 }

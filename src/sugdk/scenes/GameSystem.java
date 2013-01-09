@@ -1,57 +1,30 @@
 package sugdk.scenes;
 
+import com.badlogic.gdx.InputProcessor;
 
 /**
  * GameSystem
+ * <p/>
+ * Abstracted away the logic specifics for a game.  
+ * Useful if you want your game to follow a MVC structure.
  * @author nhydock
- *
- *  GameSystems is the base class for scene controlling systems
- *  They house all the logic for the scene
  */
-public abstract class GameSystem
-{
+public interface GameSystem extends InputProcessor{
+
 	/**
-	 * current state of the scene
+	 * Things to do when the system is first started/the scene is switched to
 	 */
-    protected GameState state;
-    
-    /**
-     * Updates the system
-     */
-    public void update()
-    {
-    	state.handle();
-    }
-
-    /**
-     * Advances the system to the next logical state
-     */
-    abstract public void setNextState();
-
-    /**
-     * Gets the current game state of the system
-     * @return The current game state
-     */
-    public GameState getState() {
-        return state;
-    }   
-    
-    /**
-     * Handles key input
-     * @param keyCode	the key code of the key pressed
-     */
-    public void keyPressed(int keyCode) {
-        state.handleKeyInput(keyCode);
-    }
-
-    /**
-     * Performs actions that should occur when a system is finished
-     */
-	abstract public void finish();
-
-    /**
-     * Performs actions that should occur when a system is started
-     */
-	public void start() {}
-
+	public void start();
+	
+	/**
+	 * Things to do when the scene is over and the system should be shutdown
+	 */
+	public void end();
+	
+	/**
+	 * Update they system while the scene is active
+	 * @param delta - amount of time passed since previous update
+	 */
+	public void update(float delta);
+	
 }

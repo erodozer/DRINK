@@ -1,6 +1,6 @@
 package core;
 
-import java.awt.event.KeyEvent;
+import com.badlogic.gdx.Input.Keys;
 
 /**
  * Input
@@ -8,9 +8,30 @@ import java.awt.event.KeyEvent;
  *
  * Here we define some buttons for use specifically for this game
  */
-public class Input extends sugdk.engine.Input {
+public enum Input {
 
 	//basic input keys
-	public final static int KEY_DRINK  = KeyEvent.VK_SPACE;
-	public final static int KEY_RESET  = KeyEvent.VK_ENTER;
+	/**
+	 * Key for chugging
+	 */
+	DRINK(Keys.SPACE, "SPACE"),
+	/**
+	 * Key for resetting the game after Game Over
+	 */
+	RESET(Keys.ENTER, "ENTER");
+
+	/**
+	 * 
+	 */
+	public final String key;
+	/**
+	 * 
+	 */
+	public final int code;
+	
+	private Input(final int key, final String c)
+	{
+		this.code = key;
+		this.key = c;
+	}
 }

@@ -14,29 +14,14 @@ import com.badlogic.gdx.graphics.GL20;
  * @author nhydock
  *
  */
-public class Main extends Game {
-
-	private static Main instance = null;
-	
-	/**
-	 * @return instance of singleton Main
-	 */
-	public static Main getInstance()
-	{
-		if (instance == null)
-			instance = new Main();
-		return instance;
-	}
-	
-	Engine engine;
-	SceneManager sm;
+public class Main{
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// create the listener that will receive the application events
-        ApplicationListener listener = new Main();
+        ApplicationListener listener = new DrinkGame();
  
         // define the window's title
         String title = "DRINK";
@@ -48,29 +33,8 @@ public class Main extends Game {
         boolean useOpenGLES2 = true;
  
         // create the game using Lwjgl starter class
-        new LwjglApplication( listener, title, width, height, useOpenGLES2 );
+        new LwjglApplication(listener, title, width, height, useOpenGLES2 );
 	}
 
-	@Override
-	public void create()
-	{
-		engine = Engine.getInstance();
-		
-		sm = new SceneManager(this);
-		
-		try
-		{
-			sm.addScene(MainScene.ID, new MainScene());
-			sm.setScene(MainScene.ID);
-		}
-		catch (NullPointerException e)
-		{
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 }

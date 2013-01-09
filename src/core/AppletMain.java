@@ -1,5 +1,6 @@
 package core;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplet;
 
 /**
@@ -19,13 +20,7 @@ public class AppletMain extends LwjglApplet {
 	public AppletMain()
 	{
 		super(new DrinkGame(), false);
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
+		Gdx.graphics.setVSync(true);
 	}
 
 }

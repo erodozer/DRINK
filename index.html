@@ -6,7 +6,7 @@
 	<center>
 	<img src="images/logo.png"></img>
 	<br/>
-	    <applet code="org.lwjgl.util.applet.AppletLoader" archive="lib/lwjgl_util_applet.jar" codebase="." width="600" height="400">
+	    <applet code="org.lwjgl.util.applet.AppletLoader" archive="lwjgl_util_applet.jar" codebase="lib/" width="600" height="400">
   
 	    <!-- The following tags are mandatory -->
 	    
@@ -17,19 +17,19 @@
 	    <param name="al_main" value="core.AppletMain">
 	    
 	    <!-- List of Jars to add to classpath -->
-	    <param name="al_jars" value="bin/Drink.jar, lib/lwjgl_applet.jar, lib/gdx.jar, lib/gdx-backend-lwjgl.jar, lib/gdx-freetype.jar, lib/gdx-openal.jar">
+	    <param name="al_jars" value="Drink.jar, lwjgl_applet.jar, gdx.jar, gdx-backend-lwjgl.jar, gdx-freetype.jar, gdx-openal.jar">
 	    
 	    <!-- signed windows natives jar in a jar --> 
-	    <param name="al_windows" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    <param name="al_windows" value="gdx-backend-lwjgl-natives.jar, gdx-natives.jar, gdx-freetype-natives.jar">
 	    
 	    <!-- signed linux natives jar in a jar --> 
-	    <param name="al_linux" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    <param name="al_linux" value="gdx-backend-lwjgl-natives.jar, gdx-natives.jar, gdx-freetype-natives.jar">
 	    
 	    <!-- signed mac osx natives jar in a jar --> 
-	    <param name="al_mac" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    <param name="al_mac" value="gdx-backend-lwjgl-natives.jar, gdx-natives.jar, gdx-freetype-natives.jar">
 
 	    <!-- signed solaris natives jar in a jar --> 
-	    <param name="al_solaris" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    <param name="al_solaris" value="gdx-backend-lwjgl-natives.jar, gdx-natives.jar, gdx-freetype-natives.jar">
 	    
 	    <!-- Tags under here are optional -->
 	    
@@ -49,7 +49,7 @@
 	    <param name="boxfgcolor" value="#ffffff">
 	    
 	    <!-- logo to paint while loading, will be centered, defaults to "appletlogo.gif" -->
-	    <param name="al_logo" value="juiceload.gif">
+	    <param name="al_logo" value="../images/juiceload.gif">
 	    
 	    <!-- progressbar to paint while loading. Will be painted on top of logo, width clipped to percentage done, defaults to "appletprogress.gif" -->
 	    <param name="al_progressbar" value="">

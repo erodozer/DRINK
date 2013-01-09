@@ -1,12 +1,67 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
-	<title="Drink - The Game">
+	<title>Drink</title>
 </head>
 <body>
 	<center>
 	<img src="images/logo.png"></img>
 	<br/>
-	Game Goes Here
+	    <applet code="org.lwjgl.util.applet.AppletLoader" archive="lib/lwjgl_util_applet.jar" codebase="." width="600" height="400">
+  
+	    <!-- The following tags are mandatory -->
+	    
+	    <!-- Name of Applet, will be used as name of directory it is saved in, and will uniquely identify it in cache -->
+	    <param name="al_title" value="Drink">
+	    
+	    <!-- Main Applet Class -->
+	    <param name="al_main" value="core.AppletMain">
+	    
+	    <!-- List of Jars to add to classpath -->
+	    <param name="al_jars" value="bin/Drink.jar, lib/lwjgl_applet.jar, lib/gdx.jar, lib/gdx-backend-lwjgl.jar, lib/gdx-freetype.jar, lib/gdx-openal.jar">
+	    
+	    <!-- signed windows natives jar in a jar --> 
+	    <param name="al_windows" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    
+	    <!-- signed linux natives jar in a jar --> 
+	    <param name="al_linux" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    
+	    <!-- signed mac osx natives jar in a jar --> 
+	    <param name="al_mac" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+
+	    <!-- signed solaris natives jar in a jar --> 
+	    <param name="al_solaris" value="lib/gdx-backend-lwjgl-natives.jar, lib/gdx-natives.jar, lib/gdx-freetype-natives.jar">
+	    
+	    <!-- Tags under here are optional -->
+	    
+	    <!-- whether to use cache - defaults to true -->
+	    <!-- <param name="al_cache" value="true"> -->
+	    
+	    <!-- Version of Applet (case insensitive String), applet files not redownloaded if same version already in cache -->
+	    <!-- <param name="al_version" value="0.1"> -->
+	    
+	    <!-- Specify the minimum JRE version required by your applet, defaults to "1.5" -->
+	    <!-- <param name="al_min_jre" value="1.6"> -->
+	    
+	    <!-- background color to paint with, defaults to white -->
+	    <param name="boxbgcolor" value="#000000">
+	    
+	    <!-- foreground color to paint with, defaults to black -->
+	    <param name="boxfgcolor" value="#ffffff">
+	    
+	    <!-- logo to paint while loading, will be centered, defaults to "appletlogo.gif" -->
+	    <param name="al_logo" value="juiceload.gif">
+	    
+	    <!-- progressbar to paint while loading. Will be painted on top of logo, width clipped to percentage done, defaults to "appletprogress.gif" -->
+	    <param name="al_progressbar" value="">
+	    
+	    <!-- whether to run in debug mode -->
+	    <param name="al_debug" value="true">
+	    
+	    <!-- whether to prepend host to cache path - defaults to true -->
+	    <!-- <param name="al_prepend_host" value="true"> -->
+	  	
+	    <param name="separate_jvm" value="true">
+	  </applet>
 	<br/>
 	<img src="images/characters.png"></img>
 	</center>

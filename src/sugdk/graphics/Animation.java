@@ -107,7 +107,17 @@ public class Animation
 						case -1:
 						{
 							if (playMode == PINGPONG)
+							{
 								reverse = !reverse;
+							}
+							else if (playMode == NORMAL)
+							{
+								currentFrame = 0;
+							}
+							else if (playMode == REVERSE)
+							{
+								currentFrame = frames-1;
+							}
 							break;
 						}
 						//decrement loop counter

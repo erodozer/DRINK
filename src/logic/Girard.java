@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import core.DataDirs;
 
 import sugdk.graphics.Animation;
+import sugdk.graphics.SpriteSheet;
 
 /**
  * Girard
@@ -63,29 +64,28 @@ public class Girard {
 	 */
 	public Girard()
 	{
-		Texture idleTex = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "girard.png"));
-		TextureRegion[] regions = {
-				new TextureRegion(idleTex, idleTex.getWidth()/3, 0, idleTex.getWidth()/3, idleTex.getHeight()),
-				new TextureRegion(idleTex, 2*idleTex.getWidth()/3, 0, idleTex.getWidth()/3, idleTex.getHeight()),
-				};
-		distracted = new Animation(.25f, regions);
-		distracted.setPlayMode(Animation.PINGPONG);
+		Texture spriteTex = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "sprites.png"));
+
+		TextureRegion girard = new TextureRegion(spriteTex, 88, 0, 48, 24);
+		SpriteSheet anim = new SpriteSheet(new TextureRegion(girard, 16, 0, 32, 24), 2, 1);
+		distracted = new Animation(.25f, anim.getRow(0));
+		//distracted.setPlayMode(Animation.PINGPONG);
 		distracted.loop();
 		distracted.setX(51);
 		distracted.setY(23);
-		aware = new Sprite(new TextureRegion(idleTex, 0, 0, idleTex.getWidth()/3, idleTex.getHeight()));
+		aware = new Sprite(girard, 0, 0, 16, 24);
 		aware.setX(51);
 		aware.setY(23);
 		//exclamation point!
-		surprise = new Sprite(new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "surprise.png")));
+		surprise = new Sprite(spriteTex, 88, 32, 10, 15);
 		surprise.setX(51);
 		surprise.setY(50);
 		
 		Texture awareBar = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "awareness.png"));
-		bar = new Sprite(new TextureRegion(awareBar, 0, 0, awareBar.getWidth(), awareBar.getHeight()/2));
+		bar = new Sprite(new TextureRegion(spriteTex, 88, 24, 20, 4));
 		bar.setX(46);
 		bar.setY(46);
-		fill = new Sprite(new TextureRegion(awareBar, 0, awareBar.getHeight()/2, awareBar.getWidth(), awareBar.getHeight()/2));
+		fill = new Sprite(new TextureRegion(spriteTex, 88, 28, 20, 4));
 		fill.setX(bar.getX());
 		fill.setY(bar.getY());
 		setup();

@@ -1,28 +1,19 @@
 package scenes.Main;
 
-import java.awt.event.KeyEvent;
-import java.util.concurrent.TimeUnit;
-
-import org.lwjgl.opengl.Display;
-
 import logic.Nick;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import core.DataDirs;
 import core.Engine;
-import core.Input;
 
+import sugdk.graphics.SimpleBitmapFont;
 import sugdk.scenes.GameDisplay;
 
 /**
@@ -32,6 +23,10 @@ import sugdk.scenes.GameDisplay;
  */
 public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 
+	/**
+	 * 
+	 * @param system
+	 */
 	public DrinkDisplay(DrinkSystem system)
 	{
 		super(system);
@@ -44,18 +39,22 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 	 * The background image
 	 */
 	private Sprite bg;
+	private Sprite inputMessage;
+	private Sprite resetMessage;
+	private Sprite caughtMessage;
 	
 	private boolean gameover;
 	
 	private String score;
 	private String time;
 	
-	private BitmapFont font;
+	private SimpleBitmapFont font;
 
 	@Override
 	public void init()
 	{
-		bg = new Sprite(new Texture(Gdx.files.internal(DataDirs.ImageDir.path+"bg.png")));
+		Texture sprite = new Texture(Gdx.files.internal(DataDirs.ImageDir.path+"sprites.png"));
+		bg = new Sprite(new TextureRegion(sprite, 88, 80, 150, 100));
 		
 		batch = new SpriteBatch();
 		/*batch.setTransformMatrix(new Matrix4(new float[]
@@ -65,11 +64,16 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 									 0f, 0f, 0f, 0f}));*/
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, bg.getWidth(), bg.getHeight());
-		FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(DataDirs.FontDir.path + "default.ttf"));
-		font = gen.generateFont(35);
-		font.setScale(.20f);
-		font.setColor(1f, 1f, 1f, 1f);
-		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		font = new SimpleBitmapFont(new TextureRegion(sprite, 88, 58, 72, 6), "0123456789.:", 1);
+		
+		caughtMessage = new Sprite(sprite, 88, 64, 116, 5);
+		resetMessage = new Sprite(sprite, 88, 69, 126, 5);
+		inputMessage = new Sprite(sprite, 88, 74, 112, 5);
+		
+		//center messages
+		caughtMessage.setPosition(17, 5);
+		resetMessage.setPosition(12, 92);
+		inputMessage.setPosition(19, 5);
 	}
 
 	@Override
@@ -102,23 +106,19 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 		engine.getGirard().draw(batch);
 		
 		//draw the shadows
-		font.setColor(0f, 0f, 0f, .25f);
-		//font.setAlignment(SFont.LEFT);
-		font.drawMultiLine(batch, "TIME: \n"+time, 2, 88, 0, HAlignment.LEFT);
-		//font.setAlignment(SFont.RIGHT);
-		font.drawMultiLine(batch, "FL Dranked\n"+score, 148, 88, 0,  HAlignment.RIGHT);
-		
-		//now draw properly
-		font.setColor(1f, 1f, 1f, 1f);
-		//font.setAlignment(SFont.LEFT);
-		font.drawMultiLine(batch, "TIME: \n"+time, 2, 89, 0, HAlignment.LEFT);
-		//font.setAlignment(SFont.RIGHT);
-		font.drawMultiLine(batch, "FL Dranked\n"+score, 148, 89, 0,  HAlignment.RIGHT);
+		font.draw(batch, time, 2, 75, HAlignment.LEFT);
+		font.draw(batch, score, 149, 75, HAlignment.RIGHT);
 		
 		//font.setAlignment(SFont.CENTER);
-		font.drawMultiLine(batch, (gameover)?"YOU HAVE BEEN CAUGHT!":"TAP " + Input.DRINK.key + " TO CHUG OJ", 75, 10, 0, BitmapFont.HAlignment.CENTER);
-		font.setColor(0f, 0f, 0f, 1f);
-		font.drawMultiLine(batch, (gameover)?"PRESS " + Input.RESET.key + " TO RESET GAME":"", 75, 97, 0, BitmapFont.HAlignment.CENTER);	
+		if (!gameover)
+		{
+			inputMessage.draw(batch);
+		}
+		else
+		{
+			resetMessage.draw(batch);
+			caughtMessage.draw(batch);
+		}
 	
 		batch.end();
 	}

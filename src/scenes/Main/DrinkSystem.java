@@ -29,7 +29,7 @@ public class DrinkSystem implements GameSystem {
 		statemachine.addState(PlayState.ID, new PlayState(this));
 		statemachine.addState(GameOverState.ID, new GameOverState(this));
 		statemachine.setState(PlayState.ID);
-		System.out.println(statemachine);
+		
 		music = Gdx.audio.newMusic(Gdx.files.internal(DataDirs.BGMDir.path + "bgm.mp3"));
 		music.setLooping(true);
 		

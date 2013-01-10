@@ -9,6 +9,7 @@ import sugdk.graphics.Animation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import core.DataDirs;
 
@@ -55,7 +56,7 @@ public class Nick{
 	 */
 	public Nick()
 	{
-		SpriteSheet tex = new SpriteSheet(new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "nick.png")), CHUGANIM, CHUGMAX);
+		SpriteSheet tex = new SpriteSheet(new TextureRegion(new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "sprites.png")), 0, 0, 88, 180), CHUGANIM, CHUGMAX);
 		sprite = new Animation[CHUGMAX];
 		for (int i = 0; i < sprite.length; i++)
 		{

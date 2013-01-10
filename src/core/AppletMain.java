@@ -20,7 +20,7 @@ public class AppletMain extends LwjglApplet {
 	public AppletMain()
 	{
 		super(new DrinkGame(), false);
-		Gdx.graphics.setVSync(true);
+		
 	}
 
 }

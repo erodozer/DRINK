@@ -81,7 +81,6 @@ public class Girard {
 		surprise.setX(51);
 		surprise.setY(50);
 		
-		Texture awareBar = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "awareness.png"));
 		bar = new Sprite(new TextureRegion(spriteTex, 88, 24, 20, 4));
 		bar.setX(46);
 		bar.setY(46);

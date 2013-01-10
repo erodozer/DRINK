@@ -1,6 +1,7 @@
 package core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 import scenes.Main.MainScene;
 import sugdk.scenes.SceneManager;
@@ -26,6 +27,8 @@ public class DrinkGame extends Game
 	@Override
 	public void create()
 	{
+		Gdx.graphics.setVSync(true);
+		
 		engine = Engine.getInstance();
 		
 		sm = new SceneManager(this);

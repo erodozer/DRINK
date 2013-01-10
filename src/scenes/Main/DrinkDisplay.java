@@ -68,7 +68,7 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 		
 		caughtMessage = new Sprite(sprite, 88, 64, 116, 5);
 		resetMessage = new Sprite(sprite, 88, 69, 126, 5);
-		inputMessage = new Sprite(sprite, 88, 74, 112, 5);
+		inputMessage = new Sprite(sprite, 88, 74, 112, 6);
 		
 		//center messages
 		caughtMessage.setPosition(17, 5);

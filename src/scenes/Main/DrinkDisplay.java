@@ -3,12 +3,16 @@ package scenes.Main;
 import logic.Nick;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import core.DataDirs;
 import core.Engine;
@@ -49,6 +53,9 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 	private String time;
 	
 	private SimpleBitmapFont font;
+	private Stage stage;
+	
+	VolumeButton musicButton;
 
 	@Override
 	public void init()
@@ -74,6 +81,10 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 		caughtMessage.setPosition(17, 5);
 		resetMessage.setPosition(12, 92);
 		inputMessage.setPosition(19, 5);
+		
+		//buttons
+        musicButton = new VolumeButton();
+        musicButton.setMusic(system.music);
 	}
 
 	@Override
@@ -119,8 +130,11 @@ public class DrinkDisplay extends GameDisplay<DrinkSystem> {
 			resetMessage.draw(batch);
 			caughtMessage.draw(batch);
 		}
+		
+		musicButton.draw(batch);
 	
 		batch.end();
+		
 	}
 
 	@Override

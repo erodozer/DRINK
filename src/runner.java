@@ -1,20 +1,14 @@
-package core;
-
-import scenes.Main.MainScene;
-import sugdk.scenes.SceneManager;
-
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.graphics.GL20;
+
+import core.DrinkGame;
 
 /**
- * Main game runner for Drink
+ * Main game runner for Drink on the Desktop
  * @author nhydock
  *
  */
-public class Main{
+public class runner{
 
 	/**
 	 * @param args
@@ -35,6 +29,4 @@ public class Main{
         // create the game using Lwjgl starter class
         new LwjglApplication(listener, title, width, height, useOpenGLES2 );
 	}
-
-
 }

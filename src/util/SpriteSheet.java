@@ -1,5 +1,6 @@
-package sugdk.graphics;
+package util;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -10,13 +11,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class SpriteSheet
 {
-
 	TextureRegion[][] rows;
 	TextureRegion[][] columns;
 	
-	int xFrames;
-	int yFrames;
+	public final int xFrames;
+	public final int yFrames;
 	private int[] frameSize;
+	private TextureRegion tex;
+	
+	public final int frameCount;
 	
 	/**
 	 * Creates a spritesheet from a texture
@@ -35,24 +38,42 @@ public class SpriteSheet
 	 * @param xFrames - number of horizontal frames in the spritesheet
 	 * @param yFrames - number of vertical frames in the spritesheet
 	 */
-	public SpriteSheet(TextureRegion tex, int xFrames, int yFrames)
+	public SpriteSheet(TextureRegion tex, final int xFrames, final int yFrames)
 	{
 		this.xFrames = xFrames;
 		this.yFrames = yFrames;
+		this.frameCount = xFrames*yFrames;
 		rows = new TextureRegion[yFrames][xFrames];
 		columns = new TextureRegion[xFrames][yFrames];
 		frameSize = new int[]{tex.getRegionWidth()/xFrames, tex.getRegionHeight()/yFrames};
-		for (int y = 0; y < yFrames; y++)
+		for (int y = 0, yArea = 0; y < yFrames; y++, yArea += frameSize[1])
 		{
-			for (int x = 0; x < xFrames; x++)
+			for (int x = 0, xArea = 0; x < xFrames; x++, xArea += frameSize[0])
 			{
-				TextureRegion r = new TextureRegion(tex, frameSize[0] * x, frameSize[1] * y, frameSize[0], frameSize[1]);
+				TextureRegion r = new TextureRegion(tex, xArea, yArea, frameSize[0], frameSize[1]);
 				rows[y][x] = r;
 				columns[x][y] = r;
 			}
 		}
+		this.tex = tex;
 	}
 	
+	/**
+	 * Loads an animation directly from a given path
+	 * @param path - path to file
+	 * @param xFrames - number of horizontal cells in the spritesheet
+	 * @param yFrames - number of vertical cells in the spritesheet
+	 */
+	public SpriteSheet(FileHandle path, int xFrames, int yFrames)
+	{
+		this(new Texture(path), xFrames, yFrames);
+	}
+	
+	public Texture getTexture()
+	{
+		return tex.getTexture();
+	}
+
 	/**
 	 * Pick a row of the spritesheet
 	 * @param row
@@ -102,11 +123,28 @@ public class SpriteSheet
 		}
 	}
 	
+	/**
+	 * Picks a single frame as if the Spritesheet is along one long row
+	 * By default we read across horizontally across the sheet
+	 * @param frame - the frame index in the spritsheet (0...n-1)
+	 * @returna region of the spritesheet
+	 */
+	public TextureRegion getFrame(int frame)
+	{
+		return this.getFrame(frame, false);
+	}
+	
+	/**
+	 * @return the width of each frame in the spritesheet
+	 */
 	public int getFrameWidth()
 	{
 		return frameSize[0];
 	}
 	
+	/**
+	 * @return the height of each frame in the spritesheet
+	 */
 	public int getFrameHeight()
 	{
 		return frameSize[1];

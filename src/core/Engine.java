@@ -1,5 +1,7 @@
 package core;
 
+import com.badlogic.gdx.assets.AssetManager;
+
 import logic.Girard;
 import logic.Nick;
 
@@ -10,41 +12,10 @@ import logic.Nick;
  */
 public class Engine{
 
-	private static Engine instance = null;
+	public static AssetManager assets;
 	
-	/**
-	 * @return an instance of the engine
-	 */
-	public static Engine getInstance()
+	static
 	{
-		if (instance == null)
-			instance = new Engine();
-		return instance;
-	}
-	
-	private Nick nick;
-	private Girard girard;
-	
-	/**
-	 * Creates an engine instance
-	 */
-	private Engine()
-	{
-		nick = new Nick();
-		girard = new Girard();
-	}
-	
-	/**
-	 * @return instance of Nick associated with this system
-	 */
-	public Nick getNick(){
-		return nick;
-	}
-	
-	/**
-	 * @return instance of Girard associated with this system
-	 */
-	public Girard getGirard(){
-		return girard;
+		assets = new AssetManager();	
 	}
 }

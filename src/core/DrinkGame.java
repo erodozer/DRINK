@@ -2,49 +2,21 @@ package core;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-
-import scenes.Main.MainScene;
-import sugdk.scenes.SceneManager;
+import core.Engine;
 
 public class DrinkGame extends Game
 {
-
-	private static DrinkGame instance = null;
 	
-	/**
-	 * @return instance of singleton Main
-	 */
-	public static DrinkGame getInstance()
+	public DrinkGame()
 	{
-		if (instance == null)
-			instance = new DrinkGame();
-		return instance;
+		new Engine();
 	}
-	
-	Engine engine;
-	SceneManager sm;
 	
 	@Override
 	public void create()
 	{
 		Gdx.graphics.setVSync(true);
 		
-		engine = Engine.getInstance();
-		
-		sm = new SceneManager(this);
-		
-		try
-		{
-			sm.addScene(MainScene.ID, new MainScene());
-			sm.setScene(MainScene.ID);
-		}
-		catch (NullPointerException e)
-		{
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		this.setScreen(new scenes.Main.Scene());
 	}
 }

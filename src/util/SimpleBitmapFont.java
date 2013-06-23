@@ -1,4 +1,5 @@
-package sugdk.graphics;
+package util;
+
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

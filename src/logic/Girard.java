@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import core.DataDirs;
-
-import sugdk.graphics.Animation;
-import sugdk.graphics.SpriteSheet;
+import util.Animation;
 
 /**
  * Girard
@@ -44,7 +41,8 @@ public class Girard {
 	static final float MAX_TIME_BEFORE_LOOKUP = 25;
 	static final float MIN_TIME_BEFORE_LOOKUP = 5;
 	
-	Animation distracted;
+	Animation distractedAnim;
+	Sprite distracted;
 	Sprite aware;
 	Sprite surprise;
 	
@@ -64,13 +62,13 @@ public class Girard {
 	 */
 	public Girard()
 	{
-		Texture spriteTex = new Texture(Gdx.files.internal(DataDirs.ImageDir.path + "sprites.png"));
+		Texture spriteTex = new Texture(Gdx.files.internal("data/sprites.png"));
 
 		TextureRegion girard = new TextureRegion(spriteTex, 88, 0, 48, 24);
-		SpriteSheet anim = new SpriteSheet(new TextureRegion(girard, 16, 0, 32, 24), 2, 1);
-		distracted = new Animation(.25f, anim.getRow(0));
+		
+		distractedAnim = new Animation(new TextureRegion(girard, 16, 0, 32, 24), 2, .25f, true);
 		//distracted.setPlayMode(Animation.PINGPONG);
-		distracted.loop();
+		distracted = new Sprite(girard, 16, 0, 16, 24);
 		distracted.setX(51);
 		distracted.setY(23);
 		aware = new Sprite(girard, 0, 0, 16, 24);
@@ -132,7 +130,7 @@ public class Girard {
 		if (awareness < 0)
 		{
 			timeSinceLookDown += delta;
-			distracted.update(delta);
+			distractedAnim.update(delta);
 			
 			if (timeSinceLookDown > timeUntilLookUp)
 			{
@@ -177,7 +175,10 @@ public class Girard {
 			aware.draw(batch);
 		//makes it look like he's fiddling with his computer when he's not aware
 		else
+		{
+			distractedAnim.set(distracted);
 			distracted.draw(batch);
+		}
 		if (surprised)
 		{
 			surprise.draw(batch);

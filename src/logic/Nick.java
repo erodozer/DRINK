@@ -58,7 +58,7 @@ public class Nick {
 	private Sprite sprite;
 	
 	float drinking;			//time since last button press.  Wait too long and he'll stop drinking
-	private static final float STOP_DRINKING = .1f;
+	private static final float STOP_DRINKING = .25f;
 							//how long it'll take before he starts to stop drinking.  Multiplied by chug rate
 	
 	/**
@@ -99,7 +99,7 @@ public class Nick {
 	{
 		chugStep = Math.min(chugStep + RATE_TO_INCREASE, RATEMAX);
 		this.chugRate = (int)(chugStep / 100);
-		drinking = .25f + STOP_DRINKING*this.chugRate;
+		drinking = STOP_DRINKING;
 	}
 	
 	/**

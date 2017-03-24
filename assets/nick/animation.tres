@@ -1,0 +1,15 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=1]
+
+[ext_resource path="res://assets/nick/00.png" type="Texture" id=1]
+[ext_resource path="res://assets/nick/08.png" type="Texture" id=2]
+[ext_resource path="res://assets/nick/09.png" type="Texture" id=3]
+[ext_resource path="res://assets/nick/10.png" type="Texture" id=4]
+[ext_resource path="res://assets/nick/11.png" type="Texture" id=5]
+[ext_resource path="res://assets/nick/15.png" type="Texture" id=6]
+[ext_resource path="res://assets/nick/04.png" type="Texture" id=7]
+[ext_resource path="res://assets/nick/14.png" type="Texture" id=8]
+
+[resource]
+
+animations = [ { "frames":[ ExtResource( 1 ) ], "loop":true, "name":"idle", "speed":5.0 }, { "frames":[ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ], "loop":true, "name":"light", "speed":8.0 }, { "frames":[ ExtResource( 6 ) ], "loop":true, "name":"heavy", "speed":4.0 }, { "frames":[ ExtResource( 7 ) ], "loop":true, "name":"sip", "speed":5.0 }, { "frames":[ ExtResource( 5 ), ExtResource( 8 ), ExtResource( 8 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 8 ), ExtResource( 5 ) ], "loop":true, "name":"med", "speed":8.0 } ]
+

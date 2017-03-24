@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=1]
+
+[ext_resource path="res://assets/nick/animation.tres" type="SpriteFrames" id=1]
+[ext_resource path="res://scripts/nick.gd" type="Script" id=2]
+
+[node name="Nick" type="AnimatedSprite"]
+
+transform/scale = Vector2( 6, 6 )
+frames = ExtResource( 1 )
+animation = "idle"
+playing = true
+script/script = ExtResource( 2 )
+
+[node name="spillage" type="Particles2D" parent="."]
+
+visibility/visible = false
+transform/pos = Vector2( 0.554014, -8.31024 )
+config/amount = 12
+config/lifetime = 1.0
+config/time_scale = 4.0
+config/explosiveness = 0.7
+params/direction = 20.0
+params/spread = 100.0
+params/linear_velocity = 5.0
+params/spin_velocity = 0.0
+params/orbit_velocity = 0.0
+params/gravity_direction = 0.0
+params/gravity_strength = 4.0
+params/radial_accel = 0.0
+params/tangential_accel = 0.0
+params/damping = 0.0
+params/initial_angle = 0.0
+params/initial_size = 1.0
+params/final_size = 1.0
+params/hue_variation = 0.0
+params/anim_speed_scale = 1.0
+params/anim_initial_pos = 0.0
+color/color = Color( 1, 0.765015, 0.140625, 1 )
+
+

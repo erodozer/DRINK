@@ -1,0 +1,74 @@
+[gd_scene load_steps=6 format=1]
+
+[ext_resource path="res://assets/girard/animation.tres" type="SpriteFrames" id=1]
+[ext_resource path="res://scripts/Girard.gd" type="Script" id=2]
+[ext_resource path="res://assets/surprise.png" type="Texture" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 1, 0, 0, 1 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.375, 0, 0, 1 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[sub_resource type="StyleBoxFlat" id=2]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0, 0, 0, 1 )
+light_color = Color( 0, 0, 0, 1 )
+dark_color = Color( 0, 0, 0, 1 )
+border_size = 16
+border_blend = true
+draw_bg = true
+
+[node name="Girard" type="AnimatedSprite"]
+
+transform/scale = Vector2( 6, 6 )
+frames = ExtResource( 1 )
+animation = "aware"
+playing = true
+script/script = ExtResource( 2 )
+
+[node name="Surprise" type="Sprite" parent="."]
+
+visibility/visible = false
+transform/pos = Vector2( -3.36292, -21.3467 )
+texture = ExtResource( 3 )
+
+[node name="Awareness" type="ProgressBar" parent="."]
+
+visibility/visible = false
+rect/scale = Vector2( 0.1, 0.1 )
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = -15.0
+margin/top = -19.0
+margin/right = 205.0
+margin/bottom = 13.0
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+range/min = 0.0
+range/max = 1.0
+range/step = 0.1
+range/page = 0.0
+range/value = 0.0
+range/exp_edit = false
+range/rounded = false
+percent/visible = false
+
+[connection signal="aware" from="." to="Awareness" method="hide"]
+
+[connection signal="aware" from="." to="Surprise" method="show"]
+
+

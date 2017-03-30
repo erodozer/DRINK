@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=8 format=1]
 
 [ext_resource path="res://scripts/game.gd" type="Script" id=1]
 [ext_resource path="res://assets/bg.png" type="Texture" id=2]
@@ -6,7 +6,6 @@
 [ext_resource path="res://Nick.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/bgm.ogg" type="AudioStream" id=5]
 [ext_resource path="res://assets/FONT.tres" type="DynamicFont" id=6]
-[ext_resource path="res://logo.png" type="Texture" id=7]
 
 [sub_resource type="GDScript" id=1]
 
@@ -260,12 +259,6 @@ uppercase = true
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-
-[node name="Sprite" type="Sprite" parent="Prompts/StartPrompt"]
-
-transform/pos = Vector2( 313.573, -407.756 )
-transform/scale = Vector2( 1, 1 )
-texture = ExtResource( 7 )
 
 [connection signal="GameOver" from="." to="Nick" method="_on_game_over"]
 
